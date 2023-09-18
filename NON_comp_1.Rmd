@@ -1,0 +1,216 @@
+---
+title: "NonCOmpartmental_1"
+output:
+  html_document:
+    df_print: paged
+  word_document: default
+date: "2023-09-18"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+# NCA- Noncomportmental analysis
+
+NCA is a fundamental tool in PK data analysis
+
+NCA is a way of analyzing concentrtion-time data to understand better how the body handles the drug
+
+In this course:
+- How to calulate parameters
+- what the parameters mean
+- the impact of the parameters
+- how to interpret change in the parameterss
+- equations and methjodologies
+
+
+### Understanding concentration data and obseraed parameters
+
+### COncentration
+- Unit of measure
+- concentration = amuount of substance per unit of volume
+- amounts are often expressed i mass units
+  - Nanogram per mililiter - ng/mL
+  - Microgram per liter - mg/L
+  - picogram per mililiter - pg/mL
+- Amount cna be expressd in mol units (1mol = molecular weight)
+  - micromol per liter - mmol/L
+  - nanomol per liter - nmol/L
+  
+Concentration measurement:
+- concentrations are measured using a vriety of nalytical methods
+- these generally consist of a eparation method and detection method
+
+Separation methods include:
+- liquid hromatography - LC
+- gas chromatography - GC
+- capture antibodies
+
+Detection methods include:
+- radiometric detection - RD
+- UV absorption - UV
+- Mass spectroscopy - MS
+- Fluorescence - FL
+
+Exa: LC-MS / GC-MS
+
+Concentration Terminology:
+- LLOQ - lower limit of Quantitation: lowest concentration that can be determined with adequate precision and accuracy. "Adequate" is defined by regulatory agencies
+- LOD - Limito of Detection: lowest concentration that can be analytically measured. Usually 2-3 times backgroung noise
+- ULOQ - Upper limit of Quantification: highest concentration that can be determine without diluting the sample
+- Precision: repeatability of an analytical result, mesured as the coefficient of variation - CV
+- Accuracy - deviation of measured value from true concentration, expressed as percentage difference from the true concnetration
+
+Assay selection considerations:
+- is the LOQ low enough? 
+1. Target LOQ shjould be  <3% of expected peak concetration
+2. need to follow drug elimination for at least 5 half-lives , which means that ~3% of drug remains
+- Are sample handling techniques robust?
+1. Provide sample integrity from blod draw to analysis
+2. storage conditions, time, stabilizers needed, tube selection, etc.
+
+Maximum Concnetration - $C_{max}$
+- maximum value in a set of data is the maximum concetration
+
+Lag Time - $t_{lag}$
+- time of last sample prior to the first sample with a measureble concentration
+
+Trough Value - $C_{trough}$ - concentration measured at the end of a dose interval at steady state
+
+Minimum Concentration - $C_{min}$ - 
+1. lowest concentration within a single dosing interval
+2. may be equal to $C_{through}$ but can be different
+
+Max time: time of sample where $C_{max}$ was observed
+
+
+### L6. Effect of Study design
+
+Obsereved parameters depend on study design:
+- blod draw times
+- frequency of blood draws
+- bllod draw times relative to events
+
+Maximum Concentratipon: time point selection affects ability to observe peak concentrations. Same data , different sampling times. Number of hours !!! 
+
+The same for: Time of $C_{max} - t_{max}$ 
+
+Lag Time $t_{lag}$
+
+Trough Values: trough not affected by sampling schedule if blod sample is taken just prior to dose administration
+
+Conclusion
+- observed parameters can be taken directly from concentraton - time data
+- nearly all of the observed parameters are dependent upon the sampling scheme
+1. Intensive sampling provides more accurate estimates for observed parameters
+2. sampling shchedules can introduce significant bias - e.g no sampling near expectec $C_{max}$
+
+
+
+## L8: Half_life:
+
+Half Life in Phusics: time required for half of the radioactive atoms in s sample to decay
+
+Application: $C^14$ dating: 
+- half life of carbon - 14 is 5730 years 
+- determine amount of carbon -14 remaining in an organic sample allows it to be dated (using half-life and original percentage of $C^14$) in the atmosphere
+
+Hal-life in PK: time reuired for observed concentration to decrease by 50%
+
+Graphical example: Linear and logarithmic model
+
+Assuming first-order elimination - IMPORTANT
+
+$dC(t) / dt = -k.C(t)$
+integate
+$C(t) = C_0.e{-k.t}$
+Natural logarithm
+$ln[C(t)] = C_0 -k.t$
+
+1. $ln[C_{t1}] = ln{C_{t1}}= ln{C_0}-k.t1$
+2. $ln[C_{t2}] = ln{C_{t2}}= ln{C_0}-k.t2$
+3. $ln[C_{t1}/C_{t2}] = k(t2-t1)$
+Half-life and elimiation rate
+$t_{1/2}= ln(2)/k$
+Graph effect of half life on Plasma concentration -time curve
+- 0.25, 05, 1, 2 hours
+
+Graph Multiphasic concentration - time profiles
+
+HL and Percentage Eliminated:
+- after 1 HL, 50% of drug is elimiated
+- after 2 HL, 75% of drug is elimiated
+- after 3 HL, 88% of drug is elimiated
+- after n HL, $1-\frac{1}{2}^n$% of drug is elimiated
+
+%Eliminad:
+1-50
+2-75
+3-88
+4-94
+5-97
+6-98
+7-99
+
+Washout time:
+- Drug 1:
+1. HL is 2h
+2. complete elimination in 10h
+- 2h * 5HL = 10H
+
+- DRUG2:
+- halflife is 20h
+- complete elimination i 4 days
+- 20h.5HL = 100h ~ 4 days
+
+Conclusion:
+- half life is the time required for a 50% reduction in the concentration of drug in the body
+- HL is related to eliminatio rate constant for first order elimination only
+- HL can be estimated from concnetration time profiles
+- coplete elimination >95% requres 5 hald lives
+
+### HL2
+
+Calculating terminal HL
+- plasma data is most often used; however blood, urine and serum can be used to calculate terminal HL values
+- only the terminal (last)HL is calulated
+- First order elimination is assumed during the terminal elimiation phase
+
+General Guidance:
+1. all concentration data in the terminal phase should be used - (log transformation)
+2. A minimum of 3 data points is required
+3. The last measurable concnetration be used unless it is greater than the previous concentration measurement
+4. The maximum observed concentration $C_{max}$ should not be used
+5. Values below the limit of quantitation BLQ should not be used
+
+Method:
+- pot concentration -time data on sami-logarithmic plot and visually identify terminal phase
+- perform linear regression on last 3 time points in semi-logarithmic concnetration-time curve
+1. slope = -(elimination rate constant)
+2. intercept is not needed
+3. $r^2$ = goodnes of fit (closer to 1 is better)
+4. $t_{1/2}= ln(2) / k $
+
+
+
+Selection the rightr number of Data Points
+- interval process starting with fewest data points (3) to maximum number of data points
+- make pairwise comparsions and select for largest value of $r^2$ or adjusted $r^2$
+
+- Adjusted $r^2 = 1 - \frac{(1-r^2)(n-1)}{n-2}$
+1. n-number of data points
+2. gives small penalty for adding data points
+
+Minimum acceptable value of $r^2$ or adjusted $r^2$ is 0.6
+
+Conclusion:
+- terminal half-life is calulated form the elimination rate constat
+- the elimination rate constant can be estimated from the concentration -time data
+- follow basic guidelines for estimating the elimination rate constant using linear regression of semilogaritmic data
+- maximize the adjusted $r^2$ value to select the correct number of points
+
+- NEXT LEC = HL3 - N11
+
+
