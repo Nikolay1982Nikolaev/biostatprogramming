@@ -1,0 +1,579 @@
+---
+title: "Inferentioal_1_counting"
+output: html_document
+date: "2023-09-18"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Counting
+
+1. SETS: 
+Sets and Subsets - A ‘set’ is defined as a group of objects (i.e., sets can be made up of letters, numbers, names, etc.). A ‘subset’ is defined as a ‘set within a set’; set   $A$ is a subset of set  $B$ if and only if every element (each object in a set is also called an element) of   $A$ is also in $B$.
+
+
+
+Empty Set - The set that contains nothing, denoted $\emptyset$
+
+- UNIOB $A \cup B$
+
+- INTERSECTION: $A \cap B$
+- COMPLEMENT: $A^c$
+- DISJOINT SETS:  Sets that do not have any overlap. You could say that the intersection of disjoint sets is the empty set (there are no elements in the intersection of two disjoint sets, which is by definition the empty set).
+- PARTITION: Imagine a set A and then imagine subset $A_1,A_2..A_n$. If these subsets are disjoint (no overlap) and cover all possible outcomes in A, they partition the set A. 
+
+
+## Naive Probability:
+
+Conception 1.1:
+The probability of an event occuring, if the likelihood of each outcome is equal,is:
+$P(event) = \frac{num_of_favorable outcomes}{num of outcomes}$ 
+
+Concept 1.2 (Multiplication Rule):
+
+```{r}
+#define the vectors for size, topping and order
+size = c("S", "M", "L")
+topping = c("pepperoni", "sausage", "meatball", "extra cheese")
+order = c("deliver", "pick-up")
+
+#keep track of the pizzas
+pizzas = character(0)
+
+#iterate over each value for each variable
+for(i in 1:length(size)){
+  for(j in 1:length(topping)){
+    for(k in 1:length(order)){
+      
+      #create a pizza
+      pizzas = rbind(pizzas, c(size[i], topping[j], order[k]))
+    }
+  }
+}
+
+#print out the pizzas; should have 24
+pizzas
+
+#count total number of large sausages; should get 2
+#   we divide by 3 because rows are length 3, and we want
+#   to convert back to number of rows (i.e., number of pizzas)
+length(pizzas[pizzas[ ,1] == "L" & pizzas[ ,2] == "sausage"])/3
+```
+
+
+Concept 1.3 (Factorial):
+
+Permutation: {abc, acb, bax, bca, cab, cba}
+
+```{r}
+#generate all of the possible permutations
+perms = combinat::permn(c("A", "B", "C", "D", "E", "F", "G"))
+
+#look at the first few permutations
+head(perms)
+
+should get factorial(7) = 5040
+length(perms)
+```
+Concept 1.4 (Binomial Coefficient):
+
+n- choose x
+
+$\bin{n}{x} = \frac{n!}{(n-x)! . (x)!}$
+
+- the binomial coefficient gives the number of ways that x objects can be chosen from a population of n objects.
+
+
+```{r}
+factorial(5)/factorial(5 - 3)
+
+```
+
+-  the set of 6 permutations with the letters A, B and C should only count for 1 committee combination.
+
+```{r}
+#generate the committees (people labeled 1 to 5)
+committees = gtools::combinations(n = 5, r = 3)
+
+#should get choose(5, 3) = factorial(5)/(factorial(3)*factorial(2)) = 10 committees
+committees
+```
+
+||order metters|prder doesn't matter|
+|---|---|---|
+|with replacement|$n^k$|$\binom{n+k-1}{k}$|
+|Without replacement| $\frac{n!}{(n-k)!}$}$\binom{n}{k}$|
+
+
+Example 1.2 (Call Me Maybe): 
+
+- Most responsible iPhone users choose a ‘passcode’ for their device: a chosen security code to prevent others from using their phone. Passcodes are 4 digits long and are can consist of the integers 0,1,…,9.
+
+How many possible passcodes are there?
+
+Define a ‘unique’ passcode as a passcode with 4 distinct digits (i.e., 2947 is unique but 3391 is not). How many unique passcodes are there?
+
+Define an ‘ascending’ passcode as a passcode where each digit is equal to or larger than the previous digit (i.e., 1489 and 1122 are ascending passcodes, but 1948 is not). How many passcodes are both unique and ascending?
+
+How many ascending (not necessarily unique) passcodes are there?
+
+Describe how your answers to this problem relate to the Sampling Table.
+
+Analytical Solution:
+- There are 10 possible selections for each of the 4 digits (0,1…, or 9). By the multiplication rule, there are   $10^4$ possible passcodes.
+
+- There are 10 possible choices for the first digit; for the second digit, we can pick any digit except for the digit we picked first, meaning we have 9 choices. Continuing in this way, we have $10.9.8.7 = \binom{10!}{6!}$
+- Every possible set of digits that we sample without constraint for a passcode can be ordered to make an ‘ascending passcode,’ but there is only one of these orders that is ‘legal’ (i.e., ascending order. If you sample the digits 4, 6, 9 and 2, the only ordering that makes an ascending passcode is 2469). So, we can adjust our answer to (b) by dividing out all of the  4! possible orders for the unique passcode (only one is ascending). This yields $\frac{10!}{6!4!} = \binom{10}{4}$
+- This is the Bose-Einstein paradigm; we are sampling digits from 0 to 9 with replacement (the passcode need not be unique), and order doesn’t matter (i.e., for any 4 digits we sample, there is one correct ascending order to put them in, so sequences with the same digits in different orders ‘represent’ only one outcome). Therefore, there are $\binom{10+4-1}{4}$ of these passcodes
+
+- We start in the top left of the Sampling Table in part (a) and then move counterclockwise. In part (a), we sample digits with replacement (i.e., you can have the passcode 9999) and order matters (i.e., the passcode 2299 is different from the passcode 9922). In part (b), when we introduce uniqueness, order still matters, but now we are sampling without replacement (i.e., once you select a 9, you can not select a 9 again). In part (c), in addition to uniqueness, which determines sampling without replacement, we essentially mandate that order doesn’t matter: if we sample 9218 and 8192, both ‘represent’ the passcode 1289 (the ‘ascending’ rule forces a single order; ‘order not matters’ here means that we will arrange the numbers into a single order). Sampling without replacement with order not mattering gives the binomial coefficient. Finally, in part (d), we remove the unique condition (so sample with replacement) but keep the ascension condition (so order does not matter), which gives us Bose-Einstein.
+
+
+Empirical solution:
+```{r}
+#should get 6^4 = 1296
+dim(gtools::permutations(n = 6, r = 4, repeats.allowed = TRUE))[1]
+
+### part b. ###
+#should get factorial(6)/factorial(2) = 360
+dim(gtools::permutations(n = 6, r = 4, repeats.allowed = FALSE))[1]
+
+## part c. ##
+#find the unique passcodes
+uniques = gtools::permutations(n = 6, r = 4, repeats.allowed = FALSE)
+
+#create unique and ascending passcodes
+uniques.ascending = apply(uniques, 1, function(x) sort(x))
+
+#orient the matrix (the function t() just transposes a matrix; flips it on it's side)
+uniques.ascending = t(uniques.ascending)
+
+#create a data frame
+uniques.ascending = data.frame(uniques.ascending)
+
+#remove duplicates; should get choose(6, 4) = 15
+dim(unique(uniques.ascending))[1]
+
+## part d. ##
+#find all passcodess
+passcodes = gtools::permutations(n = 6, r = 4, repeats.allowed = TRUE)
+
+#create ascending passcodes
+ascending = apply(passcodes, 1, function(x) sort(x))
+
+#orient the matrix (the function t() just transposes a matrix; flips it on it's side)
+ascending = t(ascending)
+
+#create a data frame
+ascending = data.frame(ascending)
+
+#remove duplicates; should get choose(6 + 4 - 1, 4) = 126
+dim(unique(ascending))[1]
+```
+
+
+# Chapter 2: COnditional Probability
+
+$P(A|B) = \frac{P(A \cap B) }{P(B)}$
+
+
+Concept 2.1 Law of Total Probability
+$P(A) = P(A|B)P(B) + P(A|B^c).P(B^c)$
+
+
+```{r}
+#replicate
+set.seed(110)
+sims = 1000
+
+
+#create vectors to track if it is sunny/if Anne goes to work
+sun = rep(0, sims)
+work = rep(0, sims)
+
+
+#run the loop
+for(i in 1:sims){
+  
+  #flip to see what the weather is
+  weather = runif(1)
+  
+  #flip to see if Anne goes to work
+  go = runif(1)
+  
+  #the case where it is sunny
+  if(weather <= .6){
+    
+    #mark that it was sunny
+    sun[i] = 1
+    
+    #Anne goes to work with probability .95 in this case
+    if(go <= .95){
+      work[i] = 1
+    }    
+  }
+  
+  #the case where it is rainy
+  if(weather > .4){
+    
+    #Anne goes to work with probability .3 in this case
+    if(go <= .3){
+      work[i] = 1
+    }
+  }
+}
+
+#we should get .6 for sun and .69 for work
+mean(sun); mean(work)
+
+```
+
+Concept 2.2 Bayes’ Rule:
+  
+  
+```{r}
+#replicate
+set.seed(110)
+sims = 1000
+
+#set paths for Sam coming/Frodo making it
+Sam = rep(0, sims)
+Frodo = rep(0, sims)
+
+#run the loop
+for(i in 1:sims){
+  
+  #flip for each Sam and Frodo
+  Sam.flip = runif(1)
+  Frodo.flip = runif(1)
+  
+  #the case where Sam comes
+  if(Sam.flip <= .8){
+    
+    #mark that Sam came
+    Sam[i] = 1
+    
+    #Frodo makes it with .9 probability
+    if(Frodo.flip <= .9){
+      Frodo[i] = 1
+    }
+  }
+  
+  #the case where Sam didn't come
+  if(Sam.flip > .8){
+    
+    #Frodo makes it with .1 probability
+    if(Frodo.flip <= .1){
+      Frodo[i] = 1
+    }
+  }
+}
+
+#should get .8 overall for Sam
+mean(Sam)
+
+#find the mean of Sam conditioned on Frodo making it; should get .97
+mean(Sam[Frodo == 1])
+```
+
+Concept 2.3 (Inclusion/Exclusion): 
+
+$P(A \cup B ) = P(A) + P(B) - P(A \cap B)$
+
+```{r}
+
+#replicate
+set.seed(110)
+sims = 1000
+
+#define different values of n to iterate over
+n = 2:10
+
+#set paths for the empirical and analytical solutions
+sol.a = rep(NA, length(n))
+sol.e = rep(NA, length(n))
+
+#iterate over n
+for(j in 1:length(n)){
+  
+  #first, calculate the analytical solution
+  k = 1:n[j]
+  sol.a[j] = sum((1/factorial(k))*(-1)^(k + 1))
+  
+  #now run the empirical simulation
+  #indicate if we get a match or not
+  match = rep(0, sims)
+  
+  #run the loop
+  for(i in 1:sims){
+    
+    #generate the 'random order' to give the babies out
+    babies = sample(1:n[j])
+    
+    #calculate 'ratios' of couple-to-baby. If the couple gets
+    #   their baby, ratio should be 1
+    ratios = babies/(1:n[j])
+    
+    #see if we got a match (at least 1 ratio is 1)
+    if(length(ratios[ratios == 1]) > 0){
+      match[i] = 1
+    }
+  }
+  
+  #mark the empirical probability
+  sol.e[j] = mean(match)
+}
+
+
+
+#graphics
+plot(n, sol.a, main = "Hospital Matching Problem",
+     xlab = "n", ylab = "P(At Least One Match)",
+     type = "p", lwd = 3, col = "firebrick3",
+     ylim = c(0, 1), pch = 16)
+lines(n, sol.e, col = "black", lwd = 3, 
+  type = "p", pch = 16)
+
+#put in the asymptotic result
+abline(h = 1 - 1/exp(1))
+
+#legend
+legend("topright", legend = c("Empirical Result", "Analytical Result"),
+       lty=c(2,2), lwd=c(2.5,2.5),
+       col=c("black", "red"))
+```
+
+
+
+Concept 2.4 (Independence):
+
+Two events are independent if knowing the outcome of one event does not affect the probability of the other event occurring.
+
+$P(A|B) = P(A), P(B|A)= P(B)$
+
+$P(A \cap B) = P(A|B).P(B) = P(B|A)P(B)$
+
+$P(A \cap B) = P(A).P(B)$
+
+```{r}
+#replicate
+set.seed(110)
+sims = 1000
+
+#keep track if these events occurred or not
+H = rep(0, sims)
+E = rep(0, sims)
+O = rep(0, sims)
+
+#run the loop
+for(i in 1:sims){
+  
+  #flip to see if we get heads
+  flip = runif(1)
+  
+  #roll the die
+  roll = sample(1:6, 1)
+  
+  #see if we got heads
+  if(flip <= 1/2){
+    H[i] = 1
+  }
+  
+  #see if we got an even number
+  if(roll%%2 == 0){
+    E[i] = 1
+  }
+  
+  #see if we got an odd number
+  if(roll%%2 == 1){
+    O[i] = 1
+  }
+}
+
+#should get 1/2 for all
+mean(E); mean(O); mean(H)
+
+#the probability of heads doesn't change if we condition on O and E,
+#   and vice versa: they are independent!
+mean(H[O == 1]); mean(H[E == 1])
+
+mean(O[H == 1]); mean(E[H == 1])
+
+#however, the mean of E changes when O is 1; they are dependent!
+mean(E[O == 1])
+```
+
+Conditional Independence
+
+Events A and B are conditionally independent given C if:
+$P(A \cap B|C) = P(A|C).P(B|C)$
+
+```{r}
+#replicate
+set.seed(110)
+sims = 1000
+
+#generate the random variables
+white = sample(1:6, sims, replace = TRUE)
+red = sample(1:6, sims, replace = TRUE)
+
+
+#calculate the sum of the rolls
+S = white + red
+
+#compare the distribution of white overall compared to white when red is 3
+#   they should both be uniform
+
+#set graphics
+par(mfrow = c(1,2))
+
+#graphics
+hist(white, main = "White", xlab = "Roll",
+     freq = FALSE,
+     col = rgb(1, 0, 0, 1/4))
+hist(white[red == 3], main = "White | Red = 3", xlab = "Roll",
+     freq = FALSE,
+     col = rgb(0, 1, 0, 1/4))
+
+
+#re-set graphics
+par(mfrow = c(1,1))
+
+
+#now compare when we also condition on the sum being 6
+#   now, we only have one option for the white roll
+
+#set graphics
+par(mfrow = c(1,2))
+
+#graphics
+hist(white, main = "White", xlab = "Roll",
+     freq = FALSE,
+     col = rgb(1, 0, 0, 1/4))
+hist(white[red == 3 & S == 6], main = "White | Red = 3, Sum = 6", xlab = "Roll",
+     freq = FALSE, breaks = 1:6,
+     col = rgb(0, 1, 0, 1/4))
+#re-set graphics
+par(mfrow = c(1,1))
+
+```
+
+
+
+Birthday Problem:
+
+```{r}
+#replicate
+set.seed(110)
+sims = 1000
+
+#define a function to calculate the analytical result
+match.prob <- function(n){
+  
+  #define the vector in the numerator
+  v = 365:(365 - n + 1)
+  
+  #return the correct probability
+  return(1 - prod(v)/365^n)
+}
+
+#run from 10 to 50 people
+people = 10:50
+
+#keep track of the match probability
+p.match = rep(NA, length(people))
+
+#iterate over the people
+for(j in 1:length(people)){
+  
+  #keep track of matches
+  matches = rep(0, sims)
+  
+  #run the inner loop (actually generate birthdays)
+  for(i in 1:sims){
+    
+    #generate the birthdays
+    bdays = sample(1:365, people[j], replace = TRUE)
+    
+    #see if we got a match (i.e., less unique bdays than people)
+    if(length(unique(bdays)) < people[j]){
+      matches[i] = 1
+    }
+  }
+  
+  #track the mean
+  p.match[j] = mean(matches)
+}
+
+#compare the plots
+plot(1:100, sapply(1:100, function(x) match.prob(x)),
+     main = "P(at least one match) vs. n",
+     xlab = "n", ylab = "P(at least one match)",
+     col = "firebrick3", type = "l",
+     lwd = 4)
+abline(h = 1/2, col = "black")
+
+#plot the empirical result
+lines(people, p.match, col = "dodgerblue4",
+      lwd = 4, type = "p", pch = 16)
+
+#add a legend
+legend("bottomright", legend = c("Empirical Result", "Analytical Result"),
+       lty=c(2,1), lwd=c(2.5,2.5),
+       col=c("dodgerblue4", "firebrick3"))
+
+```
+
+
+Monthly Hall:
+
+```{r}
+#replicate
+set.seed(110)
+sims = 1000
+
+#door that monty opens
+monty = rep(NA, sims)
+
+#keep track of where the car is
+car = rep(NA, sims)
+
+#run the loop
+for(i in 1:sims){
+  
+  #generate the doors randomly; 1 is the car, 0 is a goat
+  doors = sample(c(1, 0, 0))
+
+  #mark where the car is
+  car[i] = which(doors == 1)
+  
+  #if we picked the car, monty opens another door at random
+  if(car[i] == 1){
+    monty[i] = sample(c(2, 3), 1)
+  }
+  
+  #if we picked a goat, monty opens the other goat door
+  if(car[i] != 1){
+    
+    #label the picked door; always pick door 1
+    doors[1] = 1
+    
+    #monty picks the other goat
+    monty[i] = which(doors == 0)
+  }
+}
+
+#probability that the car is behind door 1 or door 3
+#   should be 1/3 and 2/3, respectively
+length(car[car == 1 & monty == 2])/length(car[monty == 2])
+
+length(car[car == 3 & monty == 2])/length(car[monty == 2])
+```
+
+
+Gamblers Ruin
+
+
+

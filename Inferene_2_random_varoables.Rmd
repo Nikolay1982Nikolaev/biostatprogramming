@@ -1,0 +1,94 @@
+---
+title: "Inferene_2"
+output: word_document
+date: "2023-09-18"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+# Random Variables:
+
+function - the output follows some distribution, or structured pattern
+
+## properties of random variables
+
+Concept 2.5 (Distribution):A distribution describes the ‘pattern’ that the random variable follows. Imagine a ‘recipe,’ (the distribution) that gives the instructions to make a specific ‘meal’ (the random variable).
+
+
+Concept 2.6 (Expectation): 
+
+A random variable’s expectation is another name for its average, and it is denoted by $E[X] = \sum_i x_i.P(X=x_i)$
+
+Concept 2.7 (Variance): As the name overtly suggests, this describes how much spread is inherent in a certain random variable, and is notated $Var[X] = \sum_i (x_i-E[X])^2.P(X=x_i)
+
+Concept 2.8 PMF and CDF:
+
+the PMF gives the probability that the random variable takes on a certain value.
+
+A step further than the PMF is the cumulative density function (which is the same for continuous and discrete variables; both have CDFs, there is no CMF!). P(X =< x)
+
+
+Concept 2.9 (Support): 
+The support of a distribution is simply the set of possible values that the random variable can take on. For example, if you had a random variable that could only spit out negative numbers or 0, then the support would be negative infinity to 0
+
+```{r}
+#replicate
+set.seed(110)
+sims = 1000
+
+#generate winnings
+winnings = sample(c(10, 0, -5), sims, replace = TRUE, prob = c(2/6, 3/6, 1/6))
+
+#the mean and variance should match above (2.5 and 31.25)
+mean(winnings); var(winnings)
+```
+
+
+## Binomial:
+- discrete: 1,2,3..
+- The story of the Binomial is we perform  
+n
+  independent trials, each with only two outcomes (usually we think of these two outcomes as success or failure) and with a probability of succes p that stays constant from trial to trial.
+  
+$Bin~(n,p)$
+$T~Bin(30, 5)= 30.5.(1-5)= 7.7$
+$E(X)=n.p$
+$Var(X)= m.p.q$ q=1-p
+
+$X~Bin(5,5) = P(X=x) = \binom{n}{x}.p^x.q^{n-x}= \binom{5}{x}.5^x.5^{5-x}$
+
+- support - 0, n
+
+```{r}
+#find P(X = 3), where X ~ Bin(10, 1/2)
+dbinom(3, 10, 1/2)
+
+#find P(X <= 6), where X ~ Bin(15, 1/3)
+pbinom(6, 15, 1/3)
+
+#generate 5 random draws from X, where X ~ Bin(30, 1/4)
+rbinom(5, 30, 1/4)
+```
+
+
+# Disreate Random Varibles
+
+1. Bernoulli
+
+2. Geometric
+
+3. First Success
+
+4. Negative Binomial
+
+5. Poisson
+
+6. Hypergometric
+
+7. Expectation, Indicators and Memorylessness
+
+
+  
